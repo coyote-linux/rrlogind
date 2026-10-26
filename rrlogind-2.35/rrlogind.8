@@ -1,0 +1,143 @@
+
+
+
+RRLOGIND(8)                                           RRLOGIND(8)
+
+
+NNAAMMEE
+       rrlogind  -  Road Runner Login Daemon. A suitable replace-
+       ment for it's Perl counterpart.
+
+SSYYNNOOPPSSIISS
+       rrrrllooggiinndd [[--pp <<ppoorrtt>>]] [[--vv]] [[--kk]] [[--dd]] [[--tt]]
+
+DDEESSCCRRIIPPTTIIOONN
+       rrrrllooggiinndd is for use in those  areas  that  are  using  the
+       "Road  Runner  Client Server Session Management Protocol".
+       These areas include, but are not limited to: North Eastern
+       Ohio,  Columbus Ohio, Austin Texas, Hawaii, Tampa Bay Fla,
+       and Charlotte NC.
+
+       This daemon  is  designed  to  replace  the  _r_r_l_o_g_i_n  Perl
+       script. It implements the entire _S_e_s_s_i_o_n _M_a_n_a_g_e_r _P_r_o_t_o_c_o_l_,
+       instead of just the login portion.
+
+OOPPTTIIOONNSS
+       _-_p _<_p_o_r_t_>      Used to change  the  default  (60000)  port
+                      number   to   communicate   with   for  the
+                      login server.
+
+       _-_v             Turns on verbose mode.
+
+       _-_d             Turns on debugging mode.
+
+       _-_k             Kills any running instance of  rrrrllooggiinndd  or
+                      removes the stale pid file.
+
+       _-_t             Always trust the server to be authentic.
+
+CCHHAANNGGEESS
+       _v_1_._0 - Initial Release 11/30/1998
+              A very buggy alpha version of the client
+
+       _v_1_._1 - Major Bug Fix and 1st Official Release 12/03/1998
+              Fixed keep-alive support.
+              Finished implementing the protocol specs.
+
+       _v_1_._2 - Bug Fixes 12/14/1998, Feature Additions
+              Fixed a small bug in the client state loop.
+              Changed  all  the  syslog  messages  to  report  as
+                 LOG_INFO (Now only logs to messages  instead  of
+                 all error conditions being sent to syslog.)
+              Altered  listener  code  to  also  work under 2.1.x
+                 kernels.
+              Added "Always Trust" parameter  to  compensate  for
+                 some non-spec-compliant auth servers.
+              Added broken-session detection code.
+
+       _v_1_._3 - Bug Fixes 01/17/1999, Feature Additions
+               Fixed  segmentation  fault  when  username was not
+                 specified.
+
+
+
+Road Runner Login Daemon    MARCH 1999                          1
+
+
+
+
+
+RRLOGIND(8)                                           RRLOGIND(8)
+
+
+              Fixed segmentation fault caused by a  null  session
+                 server list.
+              Moved  call  to  open syslog prior to the first use
+                 of syslog.
+              Fixed rrooaaddrruunnnneerr..hh for other flavors of _U_N_I_X_.
+              Improved signal handling.
+              rrlogind  now  deals  with  hostnames   that   have
+                 multiple IPs
+              Added automatic detection of OS and OS version.
+
+       _v_2_._0 - Feature Additions/Modifications 01/27/1999
+              Added  an  _a_u_t_o_b_u_i_l_d script that will attempt to do
+                 everything for you.
+              Removed username, password, and login  server  from
+                 the command line and added a configuration file.
+              Included  Makefiles  for  those  using  RISC  based
+                 systems.  Using _a_u_t_o_b_u_i_l_d will automatically use
+                 the new Makefiles.
+              Password is no longer stored  in  plain  text,  but
+                 rather an irreversible MD5 hash.
+
+       _v_2_._1 - Official Release of the 2.x series 02/26/1999
+              Fixed a small memory leak.
+              Fixed a problem with the RISC Makefile.
+
+       _v_2_._2 - Bug Fixes, updated rrdhcpcd 04/16/1999
+              Fixed small bug in logout logic.
+              Fixed a bug in rrdhcpcd 2 which caused an incorrect 
+               assignment of the subnet mask when obtaining a 
+               24.x.x.x IP.
+
+       _v_2_._2_1 - Bug Fixes, updated rrdhcpcd
+              Fixes small bug in the logout logic.
+              Added "clean" option to the autobuild script.
+              Fixed rrdhcpcd to work with Red Hat 5.9
+
+FFIILLEESS
+       _r_r_c_o_n_f
+            Creates  a  file  in  _/_e_t_c_/_r_o_a_d_r_u_n_n_e_r  to  store your
+            username,  password,  login  server   in   MD5   hash
+            (irreversible).
+
+AAUUTTHHOORRSS
+       _r_r_l_o_g_i_n_d - Joshua Jackson <jjackson@vortech.net>
+
+       _r_r_l_o_g_i_n_d_(_8_) - Ken Stanley <buddha@ih8dos.com>
+
+BBUUGG RREEPPOORRTTSS
+       Please  send  all  bug reports to Joshua Jackson, as he is
+       the maintainer of this distribution. Any problems or addi-
+       tions to the man page _r_r_l_o_g_i_n_d_(_8_) can go to Ken Stanley.
+
+AADDDDIITTIIOONNAALL NNOOTTEESS
+       As  of v1.1 the source code for rrlogind has been included
+       along with the source code for rrdhcpcd.  The  source  for
+       rrlogind  also comes with a Makefile for both GNU make and
+       RHIDE, and has been tested with both Slackware and  RedHat
+       systems.
+
+       The Official homepage for rrlogind and rrdhcpcd is located
+       at hhttttpp::////wwwwww..vvoorrtteecchh..nneett//rrrrlliinnuuxx//
+
+SSEEEE AALLSSOO
+       _d_h_c_p_c_d_h_(_8_)
+
+
+
+
+Road Runner Login Daemon    MARCH 1999                          2
+
+

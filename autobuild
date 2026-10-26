@@ -1,0 +1,119 @@
+#!/bin/sh
+#
+# This file attempts to detect the OS version that you are running and
+# compile the needed binaries.
+
+OS=`uname`
+OS_VERSION=`uname -r`
+SYS_TYPE=`uname -m`
+RRLOGIN_VER=2.35
+CHKCONFIG=`which chkconfig`
+RRPID=`pidof rrlogind`
+
+if [ -z "${OS_VERSION}" ]; then
+	echo "Unable to detect OS type... you will have to do it by hand"
+	exit
+fi
+
+if [ "$1" = "install" ]; then
+	INSTALL_TYPE=install
+fi
+
+if [ "$1" = "clean" ]; then
+  cd rrlogind-${RRLOGIN_VER}
+  make clean
+  cd ../rrconf
+  make clean
+  cd ..
+  rm -f binaries/*
+  rm -f helper/endian
+  exit
+fi
+
+echo "Operating system: $OS"
+
+if [ -z $SYS_TYPE ]; then
+	echo "Unable to determine machine type"
+	exit
+fi
+
+if [ ! -z "${RRPID}" ] && [ "${INSTALL_TYPE}" = "install" ]; then
+	echo "rrlogind running on PID: ${RRPID}, stopping service."
+	# A SIGKILL seems kinda harsh, but it will force rrlogind to stop without
+	# logging this computer out.	
+	kill -9 $RRPID
+	rm -f /var/run/rrlogind.pid
+	# If this is a Red Hat style system, kill the subsystem lock
+	if [ -f /var/run/subsys/roadrunner ]; then
+		rm -f /var/lock/subsys/roadrunner
+	fi
+fi		
+
+# Build the helper application
+cd helper
+gcc endian.c -o endian
+ENDIAN=`./endian`
+cd ..
+echo "Byte order appears to be ${ENDIAN}"
+
+if [ "$ENDIAN" = "BIGENDIAN" ]; then
+	echo "Building for RISC architecture ( ${SYS_TYPE} )"
+	cp -f ./rrlogind-${RRLOGIN_VER}/Makefile.risc ./rrlogind-${RRLOGIN_VER}/Makefile
+	cp -f ./rrconf/Makefile.risc ./rrconf/Makefile
+else
+	cp -f ./rrlogind-${RRLOGIN_VER}/Makefile.x86 ./rrlogind-${RRLOGIN_VER}/Makefile
+	cp -f ./rrconf/Makefile.x86 ./rrconf/Makefile
+fi
+
+# Build the rrconf utility
+cd rrconf
+make $INSTALL_TYPE
+if [ -f rrconf ]; then
+	cp -f rrconf ../binaries
+else
+	echo "rrconf build appears to have failed!"
+	exit
+fi
+cd ..
+
+cd rrlogind-${RRLOGIN_VER}
+make $INSTALL_TYPE
+if [ -f rrlogind ]; then
+	cp -f rrlogind ../binaries
+else
+	echo "rrlogind build appears to have failed!"
+	exit;
+fi
+
+
+echo
+if [ -z $INSTALL_TYPE ]; then
+	echo "Build complete... binaries are located in the ./binaries directory"
+	echo "you will now need to install them manually, or re-run this script"
+	echo "with an 'install' parameter."
+else
+	echo "Build complete."
+	if [ -z $CHKCONFIG ]; then
+		echo "RedHat chkconfig not found, service file not installed"
+		
+	else
+		if [ -d /etc/rc.d/init.d ]; then
+			echo "RedHat style init system found, installing roadrunner service file."
+			cp ../scripts/roadrunner /etc/rc.d/init.d/
+			$CHKCONFIG --add roadrunner
+			# If rrlogind was running, attempt to restart it	
+			if [ ! -z "${RRPID}" ]; then
+				/etc/rc.d/init.d/roadrunner start
+			fi
+		fi
+	fi
+	if [ ! -d /etc/roadrunner ]; then
+		echo "Creating Road Runner configuration directory"
+		mkdir -p /etc/roadrunner
+		/sbin/rrconf
+	fi
+fi
+
+cd ..
+echo
+echo "Done."

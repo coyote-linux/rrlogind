@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# roadrunner  This shell script takes care of starting and stopping
+#             rrlogind v2.x.
+#
+# chkconfig: 2345 11 30
+# description: Logs the system into TWC Road Runner Internet Service
+#
+# Author: Joshua Jackson  jjackson@vortech.net
+#         2/9/1999
+#
+# processname: rrlogind
+# pidfile: /var/run/rrlogind
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+# Check that networking is up.
+[ ${NETWORKING} = "no" ] && exit 0
+
+[ -f /sbin/rrlogind ] || exit 0
+
+# See how we were called.
+case "$1" in
+  start)
+	# Start daemons.
+	echo -n "Logging into Road Runner: "
+	daemon rrlogind -t
+	touch /var/lock/subsys/roadrunner
+	echo
+	;;
+  stop)
+	# Stop daemons.
+	echo -n "Logging out of Road Runner: "
+	killproc rrlogind
+	echo
+	rm -f /var/lock/subsys/roadrunner
+	;;
+  status)
+        status rrlogind
+	;;
+  restart)
+	$0 stop
+	$0 start
+	;;
+  *)
+	echo "Usage: roadrunner start|stop|status|restart"
+	exit 1
+esac
+
+exit 0
+

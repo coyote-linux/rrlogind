@@ -1,0 +1,110 @@
+rrlogind v2.34  -  Road Runner Login Daemon
+
+Written by: Joshua Jackson  (jjackson@vortech.net)
+Date: 11/27/1998
+
+CHANGES:
+
+v1.0	- Initial Release 11/30/98
+
+	A very buggy alpha version of the client
+
+v1.1	-  Major Bug Fix and 1st official release 12/03/98
+
+	Fixed keep alive support
+	Finished implementing the protocol specs
+
+v1.2	- Bug Fixes 12/14/98, Feature Additions
+
+	Fixed a small bug in the client state loop
+	Changed all syslog messages to report as LOG_INFO
+	  ( Now only logs to messages instead of all error conditions
+	    begin sent to syslog )
+	Altered listener code to also work under 2.1.x kernels
+	Added "Always Trust" parameter to compensate for some non-
+	  spec-compliant auth servers (Namely Columbus, OH)
+	Added broken-session detection code
+	
+v1.3	- Bug Fixes 1/17/99, Feature Additions
+
+	Fixed segmentation fault when username was not specified
+	Fixed segmentation fault caused by a null session server list
+	Moved call to open syslog to prior to the first use of syslog :-/
+	Fixed roadrunner.h for other flavors of Unix
+	Improved signal handling
+	rrlogind now deals with hostnames that have multiple IPs
+	Added automatic detection of OS and OS version
+
+v2.0	- Feature additions/modifications 1/27/1999
+
+	Added an "autobuild" script that will attempt to do everything
+	  for you.
+	Removed username, password, and login server from the command
+	  line in favor of a configuration file and script (rrconf)
+	Included makefiles for those using RISC based systems. Note that
+	  if you use the "autobuild" script the new make files will be
+	  automatically used.
+	Password is no longer stored in plain text but rather an
+	  irreversible MD5 hash
+
+v2.1	- Official release of the 2.x series 2/9/1999
+
+	Fixed a small memory leak
+	Fixed a problem with the RISC makefile
+
+v2.2	- Small bug fixes, new rrdhcpcd client for 2.2 kernels 2/26/1999
+
+	Fixed the autobuild script to work properly on Red Hat
+	Thanks goes to Todd Fiala from Austin for the rrdhcpcd patch 
+	  This patch fixes problems with rrdhcpcd when obtaining addresses
+	  from Road Runner in the 24.x.x.x range.
+
+v2.21   - Rrdhcpcd updated to compile under Red Hat 5.9
+ 
+	Rrdhcpcd updated to v2.02
+        "clean" option added to autobuild script
+
+v2.3	- Rrdhcpcd removed from the distribution 8/15/1999
+	
+	Rrlogind now assumes a lower security context when it forks
+
+v2.31	- rrconf Makefile.risc Fixed 8/25/1999
+	
+	Fixed rrconf compile problems on big endian systems (sparc, ppc, etc)
+
+v2.32	- Small Bug fix 8/29/1999
+
+	Fixed problem with PID file cleanup on exit.  This caused rrlogind
+	 to misreport that it was already running when it wasn't.
+
+v2.33	- Feature addition 9/6/1999
+	
+	Added a -n parameter to disable keep alive monitoring for areas
+	 that do not seem to be using them.
+
+v2.34   - Feature addition 9/7/1999
+
+	Added the Red Hat init service file to the distribution and modified
+	autobuild to automatically install it if Red Hat is detected.
+
+	Autobuild now starts the configuration program if your system was
+	not previously configured for Road Runner
+
+	Autobuild will now stop and attempt to restart rrlogind if it detects
+	that it is already running at the start of the install process.
+
+	Added rrdiags script to the distribution to help diagnose problems
+	you might encounter trying to use Road Runner. This utility will most 
+	likely get updated more frequently than the rrlogind daemon itself 
+	does.  The version included in this distribution is verion 1.0.  
+	Check the rrlinux web site for future updates.
+
+v2.35	- Small Bug Fix 11/4/1999
+
+	Fixed a long standing bug in rrconf that would occasionally cause it
+	not to prompt you for your login server.
+
+LICENSE UPDATE
+
+Date 10-26-2026: The license for this software has been updated to use the MIT license instead
+of the GPLv2.

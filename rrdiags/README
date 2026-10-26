@@ -1,0 +1,14 @@
+rrdiags v1.0
+
+This is a simple script file that collects gobs of system information
+that can be useful in diagnosing problems.  This utility does not
+collect any information that could pose a security risk (it does not
+collect any user account information), simply information about the
+computer itself.
+
+To see the output of the utility, simply execute it from the command
+line.  To save the output to a file, use the following:
+
+./rrdiags > diagout.txt
+
+

@@ -1,0 +1,110 @@
+#!/bin/sh
+#
+#
+
+echo "RRDIAGS v1.0"
+echo
+echo "-General system information-------------------------"
+echo
+if [ -f /etc/redhat-release ]; then
+	cat /etc/redhat-release
+fi
+
+if [ -f /usr/lib/setup/slack-* ]; then
+	echo `ls /usr/lib/setup/slack-* | cut -f 5 -d /`
+fi
+
+procinfo
+echo
+cat /proc/cpuinfo
+
+echo "-Network system information-------------------------"
+echo
+ifconfig -a
+echo
+route -n
+echo
+echo "IP Forwarding status: `cat /proc/sys/net/ipv4/ip_forward`"
+echo
+if [ -f /proc/net/ip_masquerade ]; then
+	echo "Masquerading support is available."
+else
+	echo "Masquerading support is not available."
+fi
+echo
+IPCHAINS=`which ipchains`
+if [ -z "${IPCHAINS}" ]; then
+	echo "ipchains was NOT found."
+else
+	echo "Ipchains found: ${IPCHAINS} - `${IPCHAINS} --version`"
+fi
+echo
+
+if [ -f /etc/sysconfig/network-scripts/ifcfg-eth0 ]; then
+	echo "-Interface config for eth0 ---"
+	cat /etc/sysconfig/network-scripts/ifcfg-eth0
+	echo
+fi
+
+if [ -f /etc/sysconfig/network-scripts/ifcfg-eth1 ]; then
+	echo "-Interface config for eth1 ---"
+	cat /etc/sysconfig/network-scripts/ifcfg-eth0
+	echo
+fi
+
+echo "-Loaded module information--------------------------"
+echo
+lsmod
+echo
+
+echo "-Compiler information-------------------------------"
+echo
+
+MAKE=`which make`
+CC=`which cc`
+GCC=`which gcc`
+
+if [ -z "${MAKE}" ]; then
+	echo "make is NOT installed!"
+else
+	echo "make found: ${MAKE}"
+fi
+
+if [ -z "${CC}" ] && [ -z "${GCC}" ]; then
+	echo "cc/gcc compiler NOT installed!"
+else
+	if [ ! -z "${CC}" ]; then
+		echo "cc found: ${CC}"
+	fi
+	if [ ! -z "${GCC}" ]; then
+		echo "gcc found: ${CC}"
+	fi
+fi
+
+echo
+echo "-Road Runner information----------------------------"
+echo
+
+RRLOGIND=`which rrlogind`
+
+if [ -z "${RRLOGIND}" ]; then
+	echo "rrlogind does not appear to be installed."
+	echo
+else
+	# The following will not work properly with version < 2.34
+	echo "`${RRLOGIND} -V`"
+	echo
+	echo "rrlogind installed in: ${RRLOGIND}"
+fi
+
+if [ -d /etc/roadrunner ]; then
+	echo "Road Runner configuration directory found."
+	if [ -f /etc/roadrunner/rrconf.fil ]; then
+		echo "Road Runner configuration file present."
+	fi
+fi
+
+echo
+echo "-Last 20 recorded messages---"
+grep rrlogind /var/log/messages | tail -n 20
+

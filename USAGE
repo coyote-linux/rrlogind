@@ -1,0 +1,37 @@
+rrlogind v2.34  -  Road Runner Login Daemon
+
+Written by: Joshua Jackson  (jjackson@vortech.net)
+Date: 11/27/1998
+
+rrlogind is for use in those areas that are using the "Road Runner Client 
+Server Session Management Protocol". This protocol is used by nearly all
+of the Time Warner Cable Road Runner system, as well as Media One.
+
+This daemon is designed to replace the "rrlogin" Perl script.  It implements 
+the entire Session Manager protocol, instead of just the Login portion.
+
+Usage:
+
+rrlogind [-p port] [-v] [-k] [-v] [-d]
+
+	-p <port> (optional) 	Used to changed the default communications port. 
+				Default is 60000.
+
+	-v			Turn on verbose mode
+
+	-d                      Debug mode (will not detach from console)
+	
+	-k			Kills rrlogind if it is already running.
+
+	-t			Always trust the login server to be
+				authentic.	
+
+	-n 			Disable missed-keep-alive monitor
+
+As of v1.1, I have included the source for rrlogind. The source for rrlogind 
+comes with a make file for both GNU make and RHIDE.  I have built and tested 
+rrlogind under both Slackware and Red Hat distributions of Linux.
+
+For complete setup instructions and the latest version of rrlogind
+please visit the rrlinux help site at: http://www.vortech.net/rrlinux 
+
